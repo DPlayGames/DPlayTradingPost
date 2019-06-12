@@ -2,35 +2,33 @@ pragma solidity ^0.5.9;
 
 interface DPlayTradingPostInterface {
 	
-	// 거래 정보
-	struct Trade {
-		string title;
-		string description;
-		string price;
-		
-		// 자원(ERC-20)은 최대 4개까지 지정 가능합니다.
-		address resource1Address;
-		uint resource1Amount;
-		address resource2Address;
-		uint resource2Amount;
-		address resource3Address;
-		uint resource3Amount;
-		address resource4Address;
-		uint resource4Amount;
-		
-		// 자원(ERC-721)은 최대 9개까지 지정 가능합니다.
-		address item1Address;
-		address item2Address;
-		address item3Address;
-		address item4Address;
-		address item5Address;
-		address item6Address;
-		address item7Address;
-		address item8Address;
-		address item9Address;
+	// 이벤트
+	event SellResource(uint saleId, uint price, address[] resourceAddresses, uint[] resourceAmounts, string description, uint createTime);
+	event SellItem(uint saleId, uint price, address[] itemAddresses, uint[] itemIds, string description, uint createTime);
+	event CancelResourceSale(uint indexed saleId);
+	event CancelItemSale(uint indexed saleId);
+	
+	// 자원 판매 정보
+	struct ResourceSale {
+		address		seller;
+		address[]	resourceAddresses;
+		uint[]		resourceAmounts;
+		uint		price;
+		string		description;
+		uint		createTime;
 	}
 	
-	// 물품 등록
+	// 아이템 판매 정보
+	struct ItemSale {
+		address		seller;
+		address[]	itemAddresses;
+		uint[]		itemIds;
+		uint		price;
+		string		description;
+		uint		createTime;
+	}
+	
+	// 물품 판매
 	// sell
 	
 	// 물품 구매
