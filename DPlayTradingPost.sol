@@ -198,12 +198,14 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	// 자원 판매를 취소합니다.
 	function cancelResourceSale(uint saleId) external {
 		
+		ResourceSale memory sale = resourceSales[saleId];
+		
 		// 판매자인지 확인합니다.
-		require(resourceSales[saleId].seller == msg.sender);
+		require(sale.seller == msg.sender);
 		
 		// 자원을 판매자에게 되돌려줍니다.
-		for (uint i = 0; i < resourceSales[saleId].resourceAddresses.length; i += 1) {
-			ERC20(resourceSales[saleId].resourceAddresses[i]).transferFrom(address(this), msg.sender, resourceSales[saleId].resourceAmounts[i]);
+		for (uint i = 0; i < sale.resourceAddresses.length; i += 1) {
+			ERC20(sale.resourceAddresses[i]).transferFrom(address(this), msg.sender, sale.resourceAmounts[i]);
 		}
 		
 		// 판매 정보 삭제
@@ -215,12 +217,14 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	// 아이템 판매를 취소합니다.
 	function cancelItemSale(uint saleId) external {
 		
+		ItemSale memory sale = itemSales[saleId];
+		
 		// 판매자인지 확인합니다.
-		require(itemSales[saleId].seller == msg.sender);
+		require(sale.seller == msg.sender);
 		
 		// 아이템을 판매자에게 되돌려줍니다.
-		for (uint i = 0; i < itemSales[saleId].itemAddresses.length; i += 1) {
-			ERC721(itemSales[saleId].itemAddresses[i]).transferFrom(address(this), msg.sender, itemSales[saleId].itemIds[i]);
+		for (uint i = 0; i < sale.itemAddresses.length; i += 1) {
+			ERC721(sale.itemAddresses[i]).transferFrom(address(this), msg.sender, sale.itemIds[i]);
 		}
 		
 		// 판매 정보 삭제
@@ -230,18 +234,46 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	}
 	
 	// 자원을 구매합니다.
-	function buyResource(uint saleId) payable public {
+	function buyResource(uint saleId) payable external {
 		
-		ResourceSale memory resourceSale = resourceSales[saleId];
+		ResourceSale memory sale = resourceSales[saleId];
 		
-		//TODO:
+		// DC 보유량이 가격보다 커야합니다.
+		require(dplayCoin.balanceOf(msg.sender) >= sale.price);
+		
+		// 자원을 구매자에게 전달합니다.
+		for (uint i = 0; i < sale.resourceAddresses.length; i += 1) {
+			ERC20(sale.resourceAddresses[i]).transferFrom(address(this), msg.sender, sale.resourceAmounts[i]);
+		}
+		
+		// 판매 정보 삭제
+		delete resourceSales[saleId];
+		
+		// 판매자에게 DC를 전송합니다.
+		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
+		
+		emit BuyResourceSale(saleId, msg.sender);
 	}
 	
 	// 아이템을 구매합니다.
-	function buyItem(uint saleId) payable public {
+	function buyItem(uint saleId) payable external {
 		
-		ItemSale memory itemSale = itemSales[saleId];
+		ItemSale memory sale = itemSales[saleId];
 		
-		//TODO:
+		// DC 보유량이 가격보다 커야합니다.
+		require(dplayCoin.balanceOf(msg.sender) >= sale.price);
+		
+		// 아이템을 구매자에게 전달합니다.
+		for (uint i = 0; i < sale.itemAddresses.length; i += 1) {
+			ERC721(sale.itemAddresses[i]).transferFrom(address(this), msg.sender, sale.itemIds[i]);
+		}
+		
+		// 판매 정보 삭제
+		delete itemSales[saleId];
+		
+		// 판매자에게 DC를 전송합니다.
+		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
+		
+		emit BuyItemSale(saleId, msg.sender);
 	}
 }
