@@ -2,8 +2,8 @@ pragma solidity ^0.5.9;
 
 interface DPlayTradingPostInterface {
 	
-	// 이벤트
 	// Events
+	// 이벤트
 	event SellResource(uint saleId, uint price, address[] resourceAddresses, uint[] resourceAmounts, string description, uint createTime);
 	event SellItem(uint saleId, uint price, address[] itemAddresses, uint[] itemIds, string description, uint createTime);
 	event CancelResourceSale(uint indexed saleId);
@@ -11,8 +11,8 @@ interface DPlayTradingPostInterface {
 	event BuyResourceSale(uint indexed saleId, address indexed buyer);
 	event BuyItemSale(uint indexed saleId, address indexed buyer);
 	
-	// 자원 판매 정보
 	// Resource sale info
+	// 자원 판매 정보
 	struct ResourceSale {
 		address		seller;
 		address[]	resourceAddresses;
@@ -22,8 +22,8 @@ interface DPlayTradingPostInterface {
 		uint		createTime;
 	}
 	
-	// 아이템 판매 정보
 	// Item sale info
+	// 아이템 판매 정보
 	struct ItemSale {
 		address		seller;
 		address[]	itemAddresses;
@@ -33,16 +33,16 @@ interface DPlayTradingPostInterface {
 		uint		createTime;
 	}
 	
-	// 자원 판매 횟수를 반환합니다.
 	// Returns the number of resource sales.
+	// 자원 판매 횟수를 반환합니다.
 	function getResourceSaleCount() external view returns (uint);
 	
-	// 아이템 판매 횟수를 반환합니다.
 	// Returns the number of item sales.
+	// 아이템 판매 횟수를 반환합니다.
 	function getItemSaleCount() external view returns (uint);
 	
-	// 자원 판매
 	// Sells resources.
+	// 자원을 판매합니다.
 	function sellResource(
 		address[] calldata	resourceAddresses,
 		uint[] calldata		resourceAmounts,
@@ -50,8 +50,8 @@ interface DPlayTradingPostInterface {
 		string calldata		description
 	) external returns (uint);
 	
-	// 아이템 판매
 	// Sells items.
+	// 아이템을 판매합니다.
 	function sellItem(
 		address[] calldata	itemAddresses,
 		uint[] calldata		itemIds,
@@ -59,8 +59,8 @@ interface DPlayTradingPostInterface {
 		string calldata		description
 	) external returns (uint);
 	
-	// 자원 판매 정보를 반환합니다.
 	// Returns resource sale info.
+	// 자원 판매 정보를 반환합니다.
 	function getResourceSaleInfo(uint saleId) external view returns (
 		address seller,
 		address[] memory resourceAddresses,
@@ -70,8 +70,8 @@ interface DPlayTradingPostInterface {
 		uint createTime
 	);
 	
-	// 아이템 판매 정보를 반환합니다.
 	// Returns item sale info.
+	// 아이템 판매 정보를 반환합니다.
 	function getItemSaleInfo(uint saleId) external view returns (
 		address seller,
 		address[] memory itemAddresses,
@@ -81,19 +81,19 @@ interface DPlayTradingPostInterface {
 		uint createTime
 	);
 	
-	// 자원 판매를 취소합니다.
 	// Cancels a resource sale.
+	// 자원 판매를 취소합니다.
 	function cancelResourceSale(uint saleId) external;
 	
-	// 아이템 판매를 취소합니다.
 	// Cancels an item sale.
+	// 아이템 판매를 취소합니다.
 	function cancelItemSale(uint saleId) external;
 	
-	// 자원을 구매합니다.
 	// Buys resources.
+	// 자원을 구매합니다.
 	function buyResource(uint saleId) payable external;
 	
-	// 아이템을 구매합니다.
 	// Buys items.
+	// 아이템을 구매합니다.
 	function buyItem(uint saleId) payable external;
 }
