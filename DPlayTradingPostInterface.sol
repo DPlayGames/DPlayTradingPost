@@ -59,6 +59,18 @@ interface DPlayTradingPostInterface {
 		string calldata		description
 	) external returns (uint);
 	
+	// 특정 주소가 자원 판매자인지 확인합니다.
+	function checkIsResourceSeller(address addr, uint saleId) external view returns (bool);
+	
+	// 특정 주소가 아이템 판매자인지 확인합니다.
+	function checkIsItemSeller(address addr, uint saleId) external view returns (bool);
+	
+	// 특정 판매자가 판매중인 자원 판매 ID들을 가져옵니다.
+	function getResourceSaleIds(address seller) external view returns (uint[] memory);
+	
+	// 특정 판매자가 판매중인 아이템 판매 ID들을 가져옵니다.
+	function getItemSaleIds(address seller) external view returns (uint[] memory);
+	
 	// Returns resource sale info.
 	// 자원 판매 정보를 반환합니다.
 	function getResourceSaleInfo(uint saleId) external view returns (
