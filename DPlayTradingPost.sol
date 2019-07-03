@@ -153,7 +153,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// Registers the sales info.
 		// 판매 정보를 등록합니다.
 		uint saleId = itemSales.push(ItemSale({
-			seller				: msg.sender,
+			seller			: msg.sender,
 			itemAddresses	: itemAddresses,
 			itemIds			: itemIds,
 			price			: price,
