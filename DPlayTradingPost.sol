@@ -59,10 +59,10 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 가격은 유료여야 합니다.
 		require(price > 0);
 		
-		ERC20[] memory resources = new ERC20[](itemAddresses.length);
+		ERC20[] memory items = new ERC20[](itemAddresses.length);
 		
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
-			resources[i] = ERC20(itemAddresses[i]);
+			items[i] = ERC20(itemAddresses[i]);
 		}
 		
 		// Data validification
@@ -70,16 +70,16 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
 			
 			// 판매자가 가진 아이템의 양이 판매할 양과 같거나 많아야 합니다.
-			require(resources[i].balanceOf(msg.sender) >= itemAmounts[i]);
+			require(items[i].balanceOf(msg.sender) >= itemAmounts[i]);
 			
 			// 교역소에 인출을 허락한 아이템의 양이 판매할 양과 같거나 많아야 합니다.
-			require(resources[i].allowance(msg.sender, address(this)) >= itemAmounts[i]);
+			require(items[i].allowance(msg.sender, address(this)) >= itemAmounts[i]);
 		}
 		
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
 			
 			// 교역소에 아이템을 이동합니다.
-			resources[i].transferFrom(msg.sender, address(this), itemAmounts[i]);
+			items[i].transferFrom(msg.sender, address(this), itemAmounts[i]);
 		}
 		
 		uint createTime = now;
