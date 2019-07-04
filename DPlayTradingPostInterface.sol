@@ -4,27 +4,26 @@ interface DPlayTradingPostInterface {
 	
 	// Events
 	// 이벤트
-	event SellResource(uint saleId, uint price, address[] resourceAddresses, uint[] resourceAmounts, string description, uint createTime);
-	event SellItem(uint saleId, uint price, address[] itemAddresses, uint[] itemIds, string description, uint createTime);
-	event CancelResourceSale(uint indexed saleId);
+	event SellItem(uint saleId, uint price, address[] itemAddresses, uint[] itemAmounts, string description, uint createTime);
+	event SellUniqueItem(uint saleId, uint price, address[] uniqueItemAddresses, uint[] uniqueItemIds, string description, uint createTime);
 	event CancelItemSale(uint indexed saleId);
-	event BuyResourceSale(uint indexed saleId, address indexed buyer);
+	event CancelUniqueItemSale(uint indexed saleId);
 	event BuyItemSale(uint indexed saleId, address indexed buyer);
+	event BuyUniqueItemSale(uint indexed saleId, address indexed buyer);
 	
-	// Resource sale info
-	// 자원 판매 정보
-	struct ResourceSale {
+	// Item sale info
+	// 아이템 판매 정보
+	struct ItemSale {
 		address		seller;
-		address[]	resourceAddresses;
-		uint[]		resourceAmounts;
+		address[]	itemAddresses;
+		uint[]		itemAmounts;
 		uint		price;
 		string		description;
 		uint		createTime;
 	}
 	
-	// Item sale info
-	// 아이템 판매 정보
-	struct ItemSale {
+	// 유니크 아이템 판매 정보
+	struct UniqueItemSale {
 		address		seller;
 		address[]	itemAddresses;
 		uint[]		itemIds;
@@ -33,62 +32,57 @@ interface DPlayTradingPostInterface {
 		uint		createTime;
 	}
 	
-	// Returns the number of resource sales.
-	// 자원 판매 횟수를 반환합니다.
-	function getResourceSaleCount() external view returns (uint);
-	
 	// Returns the number of item sales.
 	// 아이템 판매 횟수를 반환합니다.
 	function getItemSaleCount() external view returns (uint);
 	
-	// Sells resources.
-	// 자원을 판매합니다.
-	function sellResource(
-		address[] calldata	resourceAddresses,
-		uint[] calldata		resourceAmounts,
-		uint				price,
-		string calldata		description
-	) external returns (uint);
+	// 유니크 아이템 판매 횟수를 반환합니다.
+	function getUniqueItemSaleCount() external view returns (uint);
 	
 	// Sells items.
 	// 아이템을 판매합니다.
 	function sellItem(
+		address[] calldata	itemAddresses,
+		uint[] calldata		itemAmounts,
+		uint				price,
+		string calldata		description
+	) external returns (uint);
+	
+	// 유니크 아이템을 판매합니다.
+	function sellUniqueItem(
 		address[] calldata	itemAddresses,
 		uint[] calldata		itemIds,
 		uint				price,
 		string calldata		description
 	) external returns (uint);
 	
-	// Checks if the given address is the resource seller.
-	// 특정 주소가 자원 판매자인지 확인합니다.
-	function checkIsResourceSeller(address addr, uint saleId) external view returns (bool);
-	
 	// Checks if the given address is the item seller.
 	// 특정 주소가 아이템 판매자인지 확인합니다.
 	function checkIsItemSeller(address addr, uint saleId) external view returns (bool);
 	
-	// Gets the sale IDs of the resources sold by the given seller.
-	// 특정 판매자가 판매중인 자원 판매 ID들을 가져옵니다.
-	function getResourceSaleIds(address seller) external view returns (uint[] memory);
+	// 특정 주소가 유니크 아이템 판매자인지 확인합니다.
+	function checkIsUniqueItemSeller(address addr, uint saleId) external view returns (bool);
 	
 	// Gets the sale IDs of the items sold by the given seller.
 	// 특정 판매자가 판매중인 아이템 판매 ID들을 가져옵니다.
 	function getItemSaleIds(address seller) external view returns (uint[] memory);
 	
-	// Returns resource sale info.
-	// 자원 판매 정보를 반환합니다.
-	function getResourceSaleInfo(uint saleId) external view returns (
+	// 특정 판매자가 판매중인 유니크 아이템 판매 ID들을 가져옵니다.
+	function getUniqueItemSaleIds(address seller) external view returns (uint[] memory);
+	
+	// Returns item sale info.
+	// 아이템 판매 정보를 반환합니다.
+	function getItemSaleInfo(uint saleId) external view returns (
 		address seller,
-		address[] memory resourceAddresses,
-		uint[] memory resourceAmounts,
+		address[] memory itemAddresses,
+		uint[] memory itemAmounts,
 		uint price,
 		string memory description,
 		uint createTime
 	);
 	
-	// Returns item sale info.
-	// 아이템 판매 정보를 반환합니다.
-	function getItemSaleInfo(uint saleId) external view returns (
+	// 유니크 아이템 판매 정보를 반환합니다.
+	function getUniqueItemSaleInfo(uint saleId) external view returns (
 		address seller,
 		address[] memory itemAddresses,
 		uint[] memory itemIds,
@@ -97,19 +91,17 @@ interface DPlayTradingPostInterface {
 		uint createTime
 	);
 	
-	// Cancels a resource sale.
-	// 자원 판매를 취소합니다.
-	function cancelResourceSale(uint saleId) external;
-	
 	// Cancels an item sale.
 	// 아이템 판매를 취소합니다.
 	function cancelItemSale(uint saleId) external;
 	
-	// Buys resources.
-	// 자원을 구매합니다.
-	function buyResource(uint saleId) payable external;
+	// 유니크 아이템 판매를 취소합니다.
+	function cancelUniqueItemSale(uint saleId) external;
 	
 	// Buys items.
 	// 아이템을 구매합니다.
 	function buyItem(uint saleId) payable external;
+	
+	// 유니크 아이템을 구매합니다.
+	function buyUniqueItem(uint saleId) payable external;
 }
