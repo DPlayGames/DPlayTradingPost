@@ -102,6 +102,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		return saleId;
 	}
 	
+	// Sells uniqute items.
 	// 유니크 아이템을 판매합니다.
 	function sellUniqueItem(
 		address[] calldata	itemAddresses,
@@ -169,6 +170,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		return itemSales[saleId].seller == addr;
 	}
 	
+	// Checks if the given address is the unique item seller.
 	// 특정 주소가 유니크 아이템 판매자인지 확인합니다.
 	function checkIsUnqiueItemSeller(address addr, uint saleId) external view returns (bool) {
 		return uniqueItemSales[saleId].seller == addr;
@@ -179,6 +181,8 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	function getItemSaleIds(address seller) external view returns (uint[] memory) {
 		return sellerToItemSaleIds[seller];
 	}
+	
+	// Gets the sale IDs of the unique items sold by the given seller.
 	// 특정 판매자가 판매중인 유니크 아이템 판매 ID들을 가져옵니다.
 	function getUniqueItemSaleIds(address seller) external view returns (uint[] memory) {
 		return sellerToUniqueItemSaleIds[seller];
@@ -207,6 +211,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		);
 	}
 	
+	// Returns the unique item sale info.
 	// 유니크 아이템 판매 정보를 반환합니다.
 	function getUniqueItemSaleInfo(uint saleId) external view returns (
 		address seller,
@@ -252,6 +257,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		emit CancelItemSale(saleId);
 	}
 	
+	// Cancels a unique item sale.
 	// 유니크 아이템 판매를 취소합니다.
 	function cancelUniqueItemSale(uint saleId) external {
 		
@@ -301,6 +307,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		emit BuyItemSale(saleId, msg.sender);
 	}
 	
+	// Buys unique items.
 	// 유니크 아이템을 구매합니다.
 	function buyUniqueItem(uint saleId) payable external {
 		
