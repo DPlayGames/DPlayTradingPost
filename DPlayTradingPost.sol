@@ -41,6 +41,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		return itemSales.length;
 	}
 	
+	// Returns the number of unique item sales.
 	// 유니크 아이템 판매 횟수를 반환합니다.
 	function getUniqueItemSaleCount() external view returns (uint) {
 		return uniqueItemSales.length;
@@ -68,16 +69,16 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// Data validification
 		// 데이터 검증
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
-			
+			// The amount of the seller's items must be equal or more than the amount of the items to be sold.
 			// 판매자가 가진 아이템의 양이 판매할 양과 같거나 많아야 합니다.
 			require(items[i].balanceOf(msg.sender) >= itemAmounts[i]);
-			
+			// The amount of the item allowed to be withdrawn by the trading post must be equal or more than the amount of the items to be sold.
 			// 교역소에 인출을 허락한 아이템의 양이 판매할 양과 같거나 많아야 합니다.
 			require(items[i].allowance(msg.sender, address(this)) >= itemAmounts[i]);
 		}
 		
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
-			
+			// Moves the items to be sold to the trading post.
 			// 교역소에 아이템을 이동합니다.
 			items[i].transferFrom(msg.sender, address(this), itemAmounts[i]);
 		}
