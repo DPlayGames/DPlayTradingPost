@@ -25,7 +25,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		if (network == Network.Mainnet) {
 			//TODO
 		} else if (network == Network.Kovan) {
-			dplayCoin = DPlayCoinInterface(0x3D8E940e9b7cD7ae52BFce54b1C92C4b33EE6b82);
+			dplayCoin = DPlayCoinInterface(0xD3D2a9C0dA386D0d37573f7D06471DB81cfb3096);
 		} else if (network == Network.Ropsten) {
 			//TODO
 		} else if (network == Network.Rinkeby) {
@@ -173,7 +173,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	
 	// Checks if the given address is the unique item seller.
 	// 특정 주소가 유니크 아이템 판매자인지 확인합니다.
-	function checkIsUnqiueItemSeller(address addr, uint saleId) external view returns (bool) {
+	function checkIsUniqueItemSeller(address addr, uint saleId) external view returns (bool) {
 		return uniqueItemSales[saleId].seller == addr;
 	}
 	
