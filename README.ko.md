@@ -1,7 +1,7 @@
 # DPlay 교역소
 
 ## 계약 주소
-- Kovan: 0x8387E48645EaB0d5d025ffd30BC4e78a3961C431
+- Kovan: 0x0B7D367900d0fB627C2Fa22C245a51A6B3d8885c
 
 ## 테스트 여부
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `event SellResource(uint saleId, uint price, address[] resourceAddresses, uint[] resourceAmounts, string description, uint createTime)`

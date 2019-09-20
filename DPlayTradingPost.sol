@@ -25,7 +25,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		if (network == Network.Mainnet) {
 			//TODO
 		} else if (network == Network.Kovan) {
-			dplayCoin = DPlayCoinInterface(0xD3D2a9C0dA386D0d37573f7D06471DB81cfb3096);
+			dplayCoin = DPlayCoinInterface(0xd1E609c2Cf998e9E87FfC73A31220706df9d7633);
 		} else if (network == Network.Ropsten) {
 			//TODO
 		} else if (network == Network.Rinkeby) {
