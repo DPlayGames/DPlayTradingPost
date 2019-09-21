@@ -60,6 +60,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 가격은 유료여야 합니다.
 		require(price > 0);
 		
+		// 하나 이상의 아이템을 판매해야 합니다.
+		require(itemAddresses.length > 0);
+		
+		// 아이템 주소의 개수와 아이템 수량의 개수는 같아야 합니다.
+		require(itemAddresses.length == itemAmounts.length);
+		
 		ERC20[] memory items = new ERC20[](itemAddresses.length);
 		
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
@@ -115,6 +121,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// The price must be higher than 0.
 		// 판매 가격은 유료여야 합니다.
 		require(price > 0);
+		
+		// 하나 이상의 아이템을 판매해야 합니다.
+		require(itemAddresses.length > 0);
+		
+		// 아이템 주소의 개수와 아이템 ID의 개수는 같아야 합니다.
+		require(itemAddresses.length == itemIds.length);
 		
 		ERC721[] memory items = new ERC721[](itemAddresses.length);
 		
