@@ -283,7 +283,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	
 	// Buys items.
 	// 아이템을 구매합니다.
-	function buyItem(uint saleId) payable external {
+	function buyItem(uint saleId) external {
 		
 		ItemSale memory sale = itemSales[saleId];
 		
@@ -310,7 +310,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	
 	// Buys unique items.
 	// 유니크 아이템을 구매합니다.
-	function buyUniqueItem(uint saleId) payable external {
+	function buyUniqueItem(uint saleId) external {
 		
 		UniqueItemSale memory sale = uniqueItemSales[saleId];
 		

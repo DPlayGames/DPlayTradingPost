@@ -22,5 +22,5 @@
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function getItemSaleInfo(uint saleId) external view returns (address seller, address[] memory itemAddresses, uint[] memory itemIds, uint price, string memory description, uint createTime)`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function cancelResourceSale(uint saleId) external`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function cancelItemSale(uint saleId) external`
-- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function buyResource(uint saleId) payable external`
-- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function buyItem(uint saleId) payable external`
+- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function buyResource(uint saleId) external`
+- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `function buyItem(uint saleId) external`
