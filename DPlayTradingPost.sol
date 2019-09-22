@@ -10,9 +10,11 @@ import "./Util/SafeMath.sol";
 contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	using SafeMath for uint;
 	
+	ResourceSale[] private resourceSales;
 	ItemSale[] private itemSales;
 	UniqueItemSale[] private uniqueItemSales;
 	
+	mapping(address => uint[]) private sellerToResourceSaleIds;
 	mapping(address => uint[]) private sellerToItemSaleIds;
 	mapping(address => uint[]) private sellerToUniqueItemSaleIds;
 	
@@ -25,7 +27,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		if (network == Network.Mainnet) {
 			//TODO
 		} else if (network == Network.Kovan) {
-			dplayCoin = DPlayCoinInterface(0xd1E609c2Cf998e9E87FfC73A31220706df9d7633);
+			dplayCoin = DPlayCoinInterface(0x2f133A5ae753686449897e7E2253964058375142);
 		} else if (network == Network.Ropsten) {
 			//TODO
 		} else if (network == Network.Rinkeby) {
@@ -33,6 +35,11 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		} else {
 			revert();
 		}
+	}
+	
+	// 자원 판매 횟수를 반환합니다.
+	function getResourceSaleCount() external view returns (uint) {
+		return resourceSales.length;
 	}
 	
 	// Returns the number of item sales.
@@ -45,6 +52,52 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	// 유니크 아이템 판매 횟수를 반환합니다.
 	function getUniqueItemSaleCount() external view returns (uint) {
 		return uniqueItemSales.length;
+	}
+	
+	// 자원을 판매합니다.
+	function sellResource(
+		address			resourceAddress,
+		uint			resourceAmount,
+		uint			price,
+		string calldata	description
+	) external returns (uint) {
+		
+		// The price must be higher than 0.
+		// 판매 가격은 유료여야 합니다.
+		require(price > 0);
+		
+		ERC20 resource = ERC20(resourceAddress);
+		
+		// 한 개 이상의 자원을 판매해야 합니다.
+		require(resourceAmount > 0);
+		
+		// 판매자가 가진 자원의 양이 판매할 양과 같거나 많아야 합니다.
+		require(resource.balanceOf(msg.sender) >= resourceAmount);
+		
+		// 교역소에 인출을 허락한 자원의 양이 판매할 양과 같거나 많아야 합니다.
+		require(resource.allowance(msg.sender, address(this)) >= resourceAmount);
+		
+		// 교역소에 자원을 이동합니다.
+		resource.transferFrom(msg.sender, address(this), resourceAmount);
+		
+		uint createTime = now;
+		
+		// Registers the sales info.
+		// 판매 정보를 등록합니다.
+		uint saleId = resourceSales.push(ResourceSale({
+			seller			: msg.sender,
+			resourceAddress	: resourceAddress,
+			resourceAmount		: resourceAmount,
+			price			: price,
+			description		: description,
+			createTime		: createTime
+		})).sub(1);
+		
+		sellerToResourceSaleIds[msg.sender].push(saleId);
+		
+		emit SellResource(saleId, price, resourceAddress, resourceAmount, description, createTime);
+		
+		return saleId;
 	}
 	
 	// Sells items.
@@ -183,6 +236,11 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		return saleId;
 	}
 	
+	// 특정 주소가 자원 판매자인지 확인합니다.
+	function checkIsResourceSeller(address addr, uint saleId) external view returns (bool) {
+		return resourceSales[saleId].seller == addr;
+	}
+	
 	// Checks if the given address is the item seller.
 	// 특정 주소가 아이템 판매자인지 확인합니다.
 	function checkIsItemSeller(address addr, uint saleId) external view returns (bool) {
@@ -195,6 +253,11 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		return uniqueItemSales[saleId].seller == addr;
 	}
 	
+	// 특정 판매자가 판매중인 자원 판매 ID들을 가져옵니다.
+	function getResourceSaleIds(address seller) external view returns (uint[] memory) {
+		return sellerToResourceSaleIds[seller];
+	}
+	
 	// Gets the sale IDs of the items sold by the given seller.
 	// 특정 판매자가 판매중인 아이템 판매 ID들을 가져옵니다.
 	function getItemSaleIds(address seller) external view returns (uint[] memory) {
@@ -205,6 +268,28 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	// 특정 판매자가 판매중인 유니크 아이템 판매 ID들을 가져옵니다.
 	function getUniqueItemSaleIds(address seller) external view returns (uint[] memory) {
 		return sellerToUniqueItemSaleIds[seller];
+	}
+	
+	// 자원 판매 정보를 반환합니다.
+	function getResourceSaleInfo(uint saleId) external view returns (
+		address seller,
+		address resourceAddress,
+		uint resourceAmount,
+		uint price,
+		string memory description,
+		uint createTime
+	) {
+		
+		ResourceSale storage sale = resourceSales[saleId];
+		
+		return (
+			sale.seller,
+			sale.resourceAddress,
+			sale.resourceAmount,
+			sale.price,
+			sale.description,
+			sale.createTime
+		);
 	}
 	
 	// Returns item sales info.
@@ -253,6 +338,25 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		);
 	}
 	
+	// 자원 판매를 취소합니다.
+	function cancelResourceSale(uint saleId) external {
+		
+		ResourceSale memory sale = resourceSales[saleId];
+		
+		// Checks if the sender is the seller.
+		// 판매자인지 확인합니다.
+		require(sale.seller == msg.sender);
+		
+		// 자원을 판매자에게 되돌려줍니다.
+		ERC20(sale.resourceAddress).transferFrom(address(this), msg.sender, sale.resourceAmount);
+		
+		// Deletes the sale info.
+		// 판매 정보를 삭제합니다.
+		delete resourceSales[saleId];
+		
+		emit CancelResourceSale(saleId);
+	}
+	
 	// Cancels an item sale.
 	// 아이템 판매를 취소합니다.
 	function cancelItemSale(uint saleId) external {
@@ -299,6 +403,38 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		emit CancelUniqueItemSale(saleId);
 	}
 	
+	// 자원을 구매합니다.
+	function buyResource(uint saleId, uint amount) external {
+		
+		ResourceSale storage sale = resourceSales[saleId];
+		
+		// 판매량이 구매량보다 크거나 같아야합니다.
+		require(sale.resourceAmount >= amount);
+		
+		// The balance must be higher than the price.
+		// DC 보유량이 가격보다 커야합니다.
+		require(dplayCoin.balanceOf(msg.sender) >= sale.price.mul(amount));
+		
+		// 자원을 구매자에게 전달합니다.
+		ERC20(sale.resourceAddress).transferFrom(address(this), msg.sender, amount);
+		
+		// 판매 자원의 수치를 줄입니다.
+		sale.resourceAmount = sale.resourceAmount.sub(amount);
+		
+		emit ChangeResourceSaleAmount(saleId, sale.resourceAmount);
+		
+		// 모든 자원이 판매되었으면 판매 정보를 삭제합니다.
+		if (sale.resourceAmount == 0) {
+			delete resourceSales[saleId];
+		}
+		
+		// Transmits the payment to the seller.
+		// 판매자에게 DC를 전송합니다.
+		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price.mul(amount));
+		
+		emit BuyResource(saleId, amount, msg.sender);
+	}
+	
 	// Buys items.
 	// 아이템을 구매합니다.
 	function buyItem(uint saleId) external {
@@ -323,7 +459,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매자에게 DC를 전송합니다.
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
 		
-		emit BuyItemSale(saleId, msg.sender);
+		emit BuyItem(saleId, msg.sender);
 	}
 	
 	// Buys unique items.
@@ -350,6 +486,6 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매자에게 DC를 전송합니다.
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
 		
-		emit BuyUniqueItemSale(saleId, msg.sender);
+		emit BuyUniqueItem(saleId, msg.sender);
 	}
 }
