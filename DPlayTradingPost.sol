@@ -87,7 +87,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		uint saleId = resourceSales.push(ResourceSale({
 			seller			: msg.sender,
 			resourceAddress	: resourceAddress,
-			resourceAmount		: resourceAmount,
+			resourceAmount	: resourceAmount,
 			price			: price,
 			description		: description,
 			createTime		: createTime
@@ -423,14 +423,14 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		
 		emit ChangeResourceSaleAmount(saleId, sale.resourceAmount);
 		
+		// Transmits the payment to the seller.
+		// 판매자에게 DC를 전송합니다.
+		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price.mul(amount));
+		
 		// 모든 자원이 판매되었으면 판매 정보를 삭제합니다.
 		if (sale.resourceAmount == 0) {
 			delete resourceSales[saleId];
 		}
-		
-		// Transmits the payment to the seller.
-		// 판매자에게 DC를 전송합니다.
-		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price.mul(amount));
 		
 		emit BuyResource(saleId, amount, msg.sender);
 	}
@@ -451,13 +451,13 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 			ERC20(sale.itemAddresses[i]).transferFrom(address(this), msg.sender, sale.itemAmounts[i]);
 		}
 		
-		// Deletes the sale info.
-		// 판매 정보를 삭제합니다.
-		delete itemSales[saleId];
-		
 		// Transmits the payment to the seller.
 		// 판매자에게 DC를 전송합니다.
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
+		
+		// Deletes the sale info.
+		// 판매 정보를 삭제합니다.
+		delete itemSales[saleId];
 		
 		emit BuyItem(saleId, msg.sender);
 	}
@@ -478,13 +478,13 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 			ERC721(sale.itemAddresses[i]).transferFrom(address(this), msg.sender, sale.itemIds[i]);
 		}
 		
-		// Deletes the sale info.
-		// 판매 정보를 삭제합니다.
-		delete uniqueItemSales[saleId];
-		
 		// Transmits the payment to the seller.
 		// 판매자에게 DC를 전송합니다.
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
+		
+		// Deletes the sale info.
+		// 판매 정보를 삭제합니다.
+		delete uniqueItemSales[saleId];
 		
 		emit BuyUniqueItem(saleId, msg.sender);
 	}
