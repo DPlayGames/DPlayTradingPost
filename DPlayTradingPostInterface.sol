@@ -138,6 +138,15 @@ interface DPlayTradingPostInterface {
 		uint createTime
 	);
 	
+	// 자원 판매 설명을 수정합니다.
+	function sellResource(uint saleId, string calldata description) external;
+	
+	// 아이템 판매 설명을 수정합니다.
+	function sellItem(uint saleId, string calldata description) external;
+	
+	// 유니크 아이템 판매 설명을 수정합니다.
+	function sellUniqueItem(uint saleId, string calldata description) external;
+	
 	// 자원 판매를 취소합니다.
 	function cancelResourceSale(uint saleId) external;
 	

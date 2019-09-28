@@ -338,6 +338,30 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		);
 	}
 	
+	// 자원 판매 설명을 수정합니다.
+	function sellResource(uint saleId, string calldata description) external {
+		
+		ResourceSale storage sale = resourceSales[saleId];
+		
+		sale.description = description;
+	}
+	
+	// 아이템 판매 설명을 수정합니다.
+	function sellItem(uint saleId, string calldata description) external {
+		
+		ItemSale storage sale = itemSales[saleId];
+		
+		sale.description = description;
+	}
+	
+	// 유니크 아이템 판매 설명을 수정합니다.
+	function sellUniqueItem(uint saleId, string calldata description) external {
+		
+		UniqueItemSale storage sale = uniqueItemSales[saleId];
+		
+		sale.description = description;
+	}
+	
 	// 자원 판매를 취소합니다.
 	function cancelResourceSale(uint saleId) external {
 		
