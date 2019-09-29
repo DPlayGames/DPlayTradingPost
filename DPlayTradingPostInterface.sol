@@ -7,6 +7,9 @@ interface DPlayTradingPostInterface {
 	event SellResource(uint saleId, uint price, address resourceAddresses, uint resourceAmount, string description, uint createTime);
 	event SellItem(uint saleId, uint price, address[] itemAddresses, uint[] itemAmounts, string description, uint createTime);
 	event SellUniqueItem(uint saleId, uint price, address[] uniqueItemAddresses, uint[] uniqueItemIds, string description, uint createTime);
+	event UpdateResourceSaleDescription(uint indexed saleId, string description);
+	event UpdateItemSaleDescription(uint indexed saleId, string description);
+	event UpdateUniqueItemSaleDescription(uint indexed saleId, string description);
 	event CancelResourceSale(uint indexed saleId);
 	event CancelItemSale(uint indexed saleId);
 	event CancelUniqueItemSale(uint indexed saleId);
@@ -139,13 +142,13 @@ interface DPlayTradingPostInterface {
 	);
 	
 	// 자원 판매 설명을 수정합니다.
-	function sellResource(uint saleId, string calldata description) external;
+	function updateResourceSaleDescription(uint saleId, string calldata description) external;
 	
 	// 아이템 판매 설명을 수정합니다.
-	function sellItem(uint saleId, string calldata description) external;
+	function updateItemSaleDescription(uint saleId, string calldata description) external;
 	
 	// 유니크 아이템 판매 설명을 수정합니다.
-	function sellUniqueItem(uint saleId, string calldata description) external;
+	function updateUniqueItemSaleDescription(uint saleId, string calldata description) external;
 	
 	// 자원 판매를 취소합니다.
 	function cancelResourceSale(uint saleId) external;

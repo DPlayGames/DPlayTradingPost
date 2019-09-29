@@ -339,27 +339,45 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	}
 	
 	// 자원 판매 설명을 수정합니다.
-	function sellResource(uint saleId, string calldata description) external {
+	function updateResourceSaleDescription(uint saleId, string calldata description) external {
 		
 		ResourceSale storage sale = resourceSales[saleId];
 		
+		// Checks if the sender is the seller.
+		// 판매자인지 확인합니다.
+		require(sale.seller == msg.sender);
+		
 		sale.description = description;
+		
+		emit UpdateResourceSaleDescription(saleId, description);
 	}
 	
 	// 아이템 판매 설명을 수정합니다.
-	function sellItem(uint saleId, string calldata description) external {
+	function updateItemSaleDescription(uint saleId, string calldata description) external {
 		
 		ItemSale storage sale = itemSales[saleId];
 		
+		// Checks if the sender is the seller.
+		// 판매자인지 확인합니다.
+		require(sale.seller == msg.sender);
+		
 		sale.description = description;
+		
+		emit UpdateItemSaleDescription(saleId, description);
 	}
 	
 	// 유니크 아이템 판매 설명을 수정합니다.
-	function sellUniqueItem(uint saleId, string calldata description) external {
+	function updateUniqueItemSaleDescription(uint saleId, string calldata description) external {
 		
 		UniqueItemSale storage sale = uniqueItemSales[saleId];
 		
+		// Checks if the sender is the seller.
+		// 판매자인지 확인합니다.
+		require(sale.seller == msg.sender);
+		
 		sale.description = description;
+		
+		emit UpdateUniqueItemSaleDescription(saleId, description);
 	}
 	
 	// 자원 판매를 취소합니다.
