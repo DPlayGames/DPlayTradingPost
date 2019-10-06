@@ -123,6 +123,13 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
 			items[i] = ERC20(itemAddresses[i]);
+			
+			// 중복되는 아이템이 없어야합니다.
+			for (uint j = i + 1; j < itemAddresses.length; j += 1) {
+				if (itemAddresses[i] == itemAddresses[j]) {
+					revert();
+				}
+			}
 		}
 		
 		// Data validification
@@ -191,6 +198,13 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		
 		for (uint i = 0; i < itemAddresses.length; i += 1) {
 			items[i] = ERC721(itemAddresses[i]);
+			
+			// 중복되는 아이템이 없어야합니다.
+			for (uint j = i + 1; j < itemAddresses.length; j += 1) {
+				if (itemAddresses[i] == itemAddresses[j] && itemIds[i] == itemIds[j]) {
+					revert();
+				}
+			}
 		}
 		
 		// data validification
@@ -396,6 +410,19 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete resourceSales[saleId];
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		for (uint i = 0; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
+			if (sellerToResourceSaleIds[msg.sender][i] == saleId) {
+				
+				for (; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
+					sellerToResourceSaleIds[msg.sender][i] = sellerToResourceSaleIds[msg.sender][i + 1];
+				}
+				
+				break;
+			}
+		}
+		sellerToResourceSaleIds[msg.sender].length -= 1;
+		
 		emit CancelResourceSale(saleId);
 	}
 	
@@ -419,6 +446,19 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete itemSales[saleId];
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		for (uint i = 0; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
+			if (sellerToItemSaleIds[msg.sender][i] == saleId) {
+				
+				for (; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
+					sellerToItemSaleIds[msg.sender][i] = sellerToItemSaleIds[msg.sender][i + 1];
+				}
+				
+				break;
+			}
+		}
+		sellerToItemSaleIds[msg.sender].length -= 1;
+		
 		emit CancelItemSale(saleId);
 	}
 	
@@ -441,6 +481,19 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete uniqueItemSales[saleId];
+		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		for (uint i = 0; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
+			if (sellerToUniqueItemSaleIds[msg.sender][i] == saleId) {
+				
+				for (; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
+					sellerToUniqueItemSaleIds[msg.sender][i] = sellerToUniqueItemSaleIds[msg.sender][i + 1];
+				}
+				
+				break;
+			}
+		}
+		sellerToUniqueItemSaleIds[msg.sender].length -= 1;
 		
 		emit CancelUniqueItemSale(saleId);
 	}
@@ -471,7 +524,21 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		
 		// 모든 자원이 판매되었으면 판매 정보를 삭제합니다.
 		if (sale.resourceAmount == 0) {
+			
 			delete resourceSales[saleId];
+			
+			// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+			for (uint i = 0; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
+				if (sellerToResourceSaleIds[msg.sender][i] == saleId) {
+					
+					for (; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
+						sellerToResourceSaleIds[msg.sender][i] = sellerToResourceSaleIds[msg.sender][i + 1];
+					}
+					
+					break;
+				}
+			}
+			sellerToResourceSaleIds[msg.sender].length -= 1;
 		}
 		
 		emit BuyResource(saleId, amount, msg.sender);
@@ -501,6 +568,19 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete itemSales[saleId];
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		for (uint i = 0; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
+			if (sellerToItemSaleIds[msg.sender][i] == saleId) {
+				
+				for (; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
+					sellerToItemSaleIds[msg.sender][i] = sellerToItemSaleIds[msg.sender][i + 1];
+				}
+				
+				break;
+			}
+		}
+		sellerToItemSaleIds[msg.sender].length -= 1;
+		
 		emit BuyItem(saleId, msg.sender);
 	}
 	
@@ -527,6 +607,19 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete uniqueItemSales[saleId];
+		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		for (uint i = 0; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
+			if (sellerToUniqueItemSaleIds[msg.sender][i] == saleId) {
+				
+				for (; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
+					sellerToUniqueItemSaleIds[msg.sender][i] = sellerToUniqueItemSaleIds[msg.sender][i + 1];
+				}
+				
+				break;
+			}
+		}
+		sellerToUniqueItemSaleIds[msg.sender].length -= 1;
 		
 		emit BuyUniqueItem(saleId, msg.sender);
 	}
