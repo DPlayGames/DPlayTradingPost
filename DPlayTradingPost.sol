@@ -27,7 +27,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		if (network == Network.Mainnet) {
 			//TODO
 		} else if (network == Network.Kovan) {
-			dplayCoin = DPlayCoinInterface(0xfFF1528013478fc286ABBBE8071D5404b082Be5D);
+			dplayCoin = DPlayCoinInterface(0xbfd498C5831a7C2572145900c1a8BeFadf10f820);
 		} else if (network == Network.Ropsten) {
 			//TODO
 		} else if (network == Network.Rinkeby) {
@@ -394,6 +394,24 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		emit UpdateUniqueItemSaleDescription(saleId, description);
 	}
 	
+	// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+	function removeSellerToSaleIds(mapping(address => uint[]) storage sellerToSaleIds, uint saleId) internal {
+		
+		for (uint i = 0; i < sellerToSaleIds[msg.sender].length - 1; i += 1) {
+			
+			if (sellerToSaleIds[msg.sender][i] == saleId) {
+				
+				for (; i < sellerToSaleIds[msg.sender].length - 1; i += 1) {
+					sellerToSaleIds[msg.sender][i] = sellerToSaleIds[msg.sender][i + 1];
+				}
+				
+				break;
+			}
+		}
+		
+		sellerToSaleIds[msg.sender].length -= 1;
+	}
+	
 	// 자원 판매를 취소합니다.
 	function cancelResourceSale(uint saleId) external {
 		
@@ -411,17 +429,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		delete resourceSales[saleId];
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		for (uint i = 0; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
-			if (sellerToResourceSaleIds[msg.sender][i] == saleId) {
-				
-				for (; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
-					sellerToResourceSaleIds[msg.sender][i] = sellerToResourceSaleIds[msg.sender][i + 1];
-				}
-				
-				break;
-			}
-		}
-		sellerToResourceSaleIds[msg.sender].length -= 1;
+		removeSellerToSaleIds(sellerToResourceSaleIds, saleId);
 		
 		emit CancelResourceSale(saleId);
 	}
@@ -447,17 +455,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		delete itemSales[saleId];
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		for (uint i = 0; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
-			if (sellerToItemSaleIds[msg.sender][i] == saleId) {
-				
-				for (; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
-					sellerToItemSaleIds[msg.sender][i] = sellerToItemSaleIds[msg.sender][i + 1];
-				}
-				
-				break;
-			}
-		}
-		sellerToItemSaleIds[msg.sender].length -= 1;
+		removeSellerToSaleIds(sellerToItemSaleIds, saleId);
 		
 		emit CancelItemSale(saleId);
 	}
@@ -483,17 +481,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		delete uniqueItemSales[saleId];
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		for (uint i = 0; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
-			if (sellerToUniqueItemSaleIds[msg.sender][i] == saleId) {
-				
-				for (; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
-					sellerToUniqueItemSaleIds[msg.sender][i] = sellerToUniqueItemSaleIds[msg.sender][i + 1];
-				}
-				
-				break;
-			}
-		}
-		sellerToUniqueItemSaleIds[msg.sender].length -= 1;
+		removeSellerToSaleIds(sellerToUniqueItemSaleIds, saleId);
 		
 		emit CancelUniqueItemSale(saleId);
 	}
@@ -528,17 +516,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 			delete resourceSales[saleId];
 			
 			// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-			for (uint i = 0; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
-				if (sellerToResourceSaleIds[msg.sender][i] == saleId) {
-					
-					for (; i < sellerToResourceSaleIds[msg.sender].length - 1; i += 1) {
-						sellerToResourceSaleIds[msg.sender][i] = sellerToResourceSaleIds[msg.sender][i + 1];
-					}
-					
-					break;
-				}
-			}
-			sellerToResourceSaleIds[msg.sender].length -= 1;
+			removeSellerToSaleIds(sellerToResourceSaleIds, saleId);
 		}
 		
 		emit BuyResource(saleId, amount, msg.sender);
@@ -569,17 +547,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		delete itemSales[saleId];
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		for (uint i = 0; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
-			if (sellerToItemSaleIds[msg.sender][i] == saleId) {
-				
-				for (; i < sellerToItemSaleIds[msg.sender].length - 1; i += 1) {
-					sellerToItemSaleIds[msg.sender][i] = sellerToItemSaleIds[msg.sender][i + 1];
-				}
-				
-				break;
-			}
-		}
-		sellerToItemSaleIds[msg.sender].length -= 1;
+		removeSellerToSaleIds(sellerToItemSaleIds, saleId);
 		
 		emit BuyItem(saleId, msg.sender);
 	}
@@ -609,17 +577,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		delete uniqueItemSales[saleId];
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		for (uint i = 0; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
-			if (sellerToUniqueItemSaleIds[msg.sender][i] == saleId) {
-				
-				for (; i < sellerToUniqueItemSaleIds[msg.sender].length - 1; i += 1) {
-					sellerToUniqueItemSaleIds[msg.sender][i] = sellerToUniqueItemSaleIds[msg.sender][i + 1];
-				}
-				
-				break;
-			}
-		}
-		sellerToUniqueItemSaleIds[msg.sender].length -= 1;
+		removeSellerToSaleIds(sellerToUniqueItemSaleIds, saleId);
 		
 		emit BuyUniqueItem(saleId, msg.sender);
 	}
