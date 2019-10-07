@@ -395,21 +395,21 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	}
 	
 	// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-	function removeSellerToSaleIds(mapping(address => uint[]) storage sellerToSaleIds, uint saleId) internal {
+	function removeSellerToSaleIds(uint[] storage sellerSaleIds, uint saleId) internal {
 		
-		for (uint i = 0; i < sellerToSaleIds[msg.sender].length - 1; i += 1) {
+		for (uint i = 0; i < sellerSaleIds.length - 1; i += 1) {
 			
-			if (sellerToSaleIds[msg.sender][i] == saleId) {
+			if (sellerSaleIds[i] == saleId) {
 				
-				for (; i < sellerToSaleIds[msg.sender].length - 1; i += 1) {
-					sellerToSaleIds[msg.sender][i] = sellerToSaleIds[msg.sender][i + 1];
+				for (; i < sellerSaleIds.length - 1; i += 1) {
+					sellerSaleIds[i] = sellerSaleIds[i + 1];
 				}
 				
 				break;
 			}
 		}
 		
-		sellerToSaleIds[msg.sender].length -= 1;
+		sellerSaleIds.length -= 1;
 	}
 	
 	// 자원 판매를 취소합니다.
@@ -424,12 +424,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 자원을 판매자에게 되돌려줍니다.
 		ERC20(sale.resourceAddress).transferFrom(address(this), msg.sender, sale.resourceAmount);
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		removeSellerToSaleIds(sellerToResourceSaleIds[msg.sender], saleId);
+		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete resourceSales[saleId];
-		
-		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToResourceSaleIds, saleId);
 		
 		emit CancelResourceSale(saleId);
 	}
@@ -450,12 +450,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 			ERC20(sale.itemAddresses[i]).transferFrom(address(this), msg.sender, sale.itemAmounts[i]);
 		}
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		removeSellerToSaleIds(sellerToItemSaleIds[msg.sender], saleId);
+		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete itemSales[saleId];
-		
-		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToItemSaleIds, saleId);
 		
 		emit CancelItemSale(saleId);
 	}
@@ -476,12 +476,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 			ERC721(sale.itemAddresses[i]).transferFrom(address(this), msg.sender, sale.itemIds[i]);
 		}
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		removeSellerToSaleIds(sellerToUniqueItemSaleIds[msg.sender], saleId);
+		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete uniqueItemSales[saleId];
-		
-		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToUniqueItemSaleIds, saleId);
 		
 		emit CancelUniqueItemSale(saleId);
 	}
@@ -513,10 +513,10 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 모든 자원이 판매되었으면 판매 정보를 삭제합니다.
 		if (sale.resourceAmount == 0) {
 			
-			delete resourceSales[saleId];
-			
 			// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-			removeSellerToSaleIds(sellerToResourceSaleIds, saleId);
+			removeSellerToSaleIds(sellerToResourceSaleIds[sale.seller], saleId);
+			
+			delete resourceSales[saleId];
 		}
 		
 		emit BuyResource(saleId, amount, msg.sender);
@@ -542,12 +542,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매자에게 DC를 전송합니다.
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		removeSellerToSaleIds(sellerToItemSaleIds[sale.seller], saleId);
+		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete itemSales[saleId];
-		
-		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToItemSaleIds, saleId);
 		
 		emit BuyItem(saleId, msg.sender);
 	}
@@ -572,12 +572,12 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매자에게 DC를 전송합니다.
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
 		
+		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
+		removeSellerToSaleIds(sellerToUniqueItemSaleIds[sale.seller], saleId);
+		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete uniqueItemSales[saleId];
-		
-		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToUniqueItemSaleIds, saleId);
 		
 		emit BuyUniqueItem(saleId, msg.sender);
 	}
