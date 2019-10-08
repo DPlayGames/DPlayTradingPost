@@ -7,13 +7,21 @@ interface DPlayTradingPostInterface {
 	event SellResource(uint saleId, uint price, address resourceAddresses, uint resourceAmount, string description, uint createTime);
 	event SellItem(uint saleId, uint price, address[] itemAddresses, uint[] itemAmounts, string description, uint createTime);
 	event SellUniqueItem(uint saleId, uint price, address[] uniqueItemAddresses, uint[] uniqueItemIds, string description, uint createTime);
+	
 	event UpdateResourceSaleDescription(uint indexed saleId, string description);
 	event UpdateItemSaleDescription(uint indexed saleId, string description);
 	event UpdateUniqueItemSaleDescription(uint indexed saleId, string description);
+	
+	event RemoveResourceSale(uint indexed saleId);
+	event RemoveItemSale(uint indexed saleId);
+	event RemoveUniqueItemSale(uint indexed saleId);
+	
 	event CancelResourceSale(uint indexed saleId);
 	event CancelItemSale(uint indexed saleId);
 	event CancelUniqueItemSale(uint indexed saleId);
+	
 	event ChangeResourceSaleAmount(uint indexed saleId, uint amount);
+	
 	event BuyResource(uint indexed saleId, uint amount, address indexed buyer);
 	event BuyItem(uint indexed saleId, address indexed buyer);
 	event BuyUniqueItem(uint indexed saleId, address indexed buyer);

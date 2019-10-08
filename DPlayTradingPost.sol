@@ -431,6 +431,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete resourceSales[saleId];
 		
+		emit RemoveResourceSale(saleId);
 		emit CancelResourceSale(saleId);
 	}
 	
@@ -457,6 +458,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete itemSales[saleId];
 		
+		emit RemoveItemSale(saleId);
 		emit CancelItemSale(saleId);
 	}
 	
@@ -483,6 +485,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete uniqueItemSales[saleId];
 		
+		emit RemoveUniqueItemSale(saleId);
 		emit CancelUniqueItemSale(saleId);
 	}
 	
@@ -517,6 +520,8 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 			removeSellerToSaleIds(sellerToResourceSaleIds[sale.seller], saleId);
 			
 			delete resourceSales[saleId];
+			
+			emit RemoveResourceSale(saleId);
 		}
 		
 		emit BuyResource(saleId, amount, msg.sender);
@@ -549,6 +554,8 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// 판매 정보를 삭제합니다.
 		delete itemSales[saleId];
 		
+		emit RemoveItemSale(saleId);
+		
 		emit BuyItem(saleId, msg.sender);
 	}
 	
@@ -578,6 +585,8 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
 		delete uniqueItemSales[saleId];
+		
+		emit RemoveUniqueItemSale(saleId);
 		
 		emit BuyUniqueItem(saleId, msg.sender);
 	}
