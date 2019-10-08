@@ -25,13 +25,13 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		// Loads the DPlay Coin smart contract.
 		// DPlay Coin 스마트 계약을 불러옵니다.
 		if (network == Network.Mainnet) {
-			//TODO
+			dplayCoin = DPlayCoinInterface(0x92c5387aCE61F5c505BF2c2D4c84120F0A813d4B);
 		} else if (network == Network.Kovan) {
-			dplayCoin = DPlayCoinInterface(0x55CF4Ea256A8c66ffc0770CabfddcD65d1152595);
+			dplayCoin = DPlayCoinInterface(0xb53A87bC4E5443a3e7BdaB0FAb53fd5661573036);
 		} else if (network == Network.Ropsten) {
-			//TODO
+			dplayCoin = DPlayCoinInterface(0x1ab85da3f07D66C4465929b8B8C1C8C47b531d5a);
 		} else if (network == Network.Rinkeby) {
-			//TODO
+			dplayCoin = DPlayCoinInterface(0xBDC07353d7D0CBeD081cA08933a1ACA0d9c82a38);
 		} else {
 			revert();
 		}
@@ -294,7 +294,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		uint createTime
 	) {
 		
-		ResourceSale storage sale = resourceSales[saleId];
+		ResourceSale memory sale = resourceSales[saleId];
 		
 		return (
 			sale.seller,
@@ -317,7 +317,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		uint createTime
 	) {
 		
-		ItemSale storage sale = itemSales[saleId];
+		ItemSale memory sale = itemSales[saleId];
 		
 		return (
 			sale.seller,
@@ -340,7 +340,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		uint createTime
 	) {
 		
-		UniqueItemSale storage sale = uniqueItemSales[saleId];
+		UniqueItemSale memory sale = uniqueItemSales[saleId];
 		
 		return (
 			sale.seller,
@@ -395,7 +395,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 	}
 	
 	// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-	function removeSellerToSaleIds(uint[] storage sellerSaleIds, uint saleId) internal {
+	function removeSellerSaleId(uint[] storage sellerSaleIds, uint saleId) internal {
 		
 		for (uint i = 0; i < sellerSaleIds.length - 1; i += 1) {
 			
@@ -425,7 +425,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		ERC20(sale.resourceAddress).transferFrom(address(this), msg.sender, sale.resourceAmount);
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToResourceSaleIds[msg.sender], saleId);
+		removeSellerSaleId(sellerToResourceSaleIds[msg.sender], saleId);
 		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
@@ -452,7 +452,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		}
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToItemSaleIds[msg.sender], saleId);
+		removeSellerSaleId(sellerToItemSaleIds[msg.sender], saleId);
 		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
@@ -479,7 +479,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		}
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToUniqueItemSaleIds[msg.sender], saleId);
+		removeSellerSaleId(sellerToUniqueItemSaleIds[msg.sender], saleId);
 		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
@@ -517,7 +517,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		if (sale.resourceAmount == 0) {
 			
 			// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-			removeSellerToSaleIds(sellerToResourceSaleIds[sale.seller], saleId);
+			removeSellerSaleId(sellerToResourceSaleIds[sale.seller], saleId);
 			
 			delete resourceSales[saleId];
 			
@@ -548,7 +548,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToItemSaleIds[sale.seller], saleId);
+		removeSellerSaleId(sellerToItemSaleIds[sale.seller], saleId);
 		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
@@ -580,7 +580,7 @@ contract DPlayTradingPost is DPlayTradingPostInterface, NetworkChecker {
 		dplayCoin.transferFrom(msg.sender, sale.seller, sale.price);
 		
 		// 판매자의 판매 ID 목록에서 판매 ID를 제거합니다.
-		removeSellerToSaleIds(sellerToUniqueItemSaleIds[sale.seller], saleId);
+		removeSellerSaleId(sellerToUniqueItemSaleIds[sale.seller], saleId);
 		
 		// Deletes the sale info.
 		// 판매 정보를 삭제합니다.
