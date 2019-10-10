@@ -13,9 +13,9 @@
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event UpdateResourceSaleDescription(uint indexed saleId, string description)`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event UpdateItemSaleDescription(uint indexed saleId, string description)`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event UpdateUniqueItemSaleDescription(uint indexed saleId, string description)`
-- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `event RemoveResourceSale(uint indexed saleId)`
-- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `event RemoveItemSale(uint indexed saleId)`
-- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-no-red.svg) `event RemoveUniqueItemSale(uint indexed saleId)`
+- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event RemoveResourceSale(uint indexed saleId)`
+- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event RemoveItemSale(uint indexed saleId)`
+- ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event RemoveUniqueItemSale(uint indexed saleId)`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event CancelResourceSale(uint indexed saleId)`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event CancelItemSale(uint indexed saleId)`
 - ![테스트 여부](https://img.shields.io/badge/테스트%20여부-yes-brightgreen.svg) `event CancelUniqueItemSale(uint indexed saleId)`
